@@ -1,0 +1,69 @@
+{
+  "projectType": "frontend",
+  "projectName": "skyhan.cloud",
+  "projectDescription": "Personal portfolio and blog website for Gökhan Bulut, a developer from Turkey, built with Next.js 15 and Tailwind CSS.",
+  "theme": "willow",
+  "primaryColor": "#A86848",
+  "lightColor": "#FAF8F5",
+  "darkColor": "#262422",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Overview",
+        "groups": [
+          {
+            "group": "Introduction",
+            "pages": ["introduction", "quickstart"]
+          },
+          {
+            "group": "Self-Hosting",
+            "pages": ["self-hosting/prerequisites", "self-hosting/configuration", "self-hosting/deployment"]
+          }
+        ]
+      },
+      {
+        "tab": "Features",
+        "groups": [
+          {
+            "group": "Core Features",
+            "pages": ["features/portfolio", "features/blog", "features/discord-status"]
+          },
+          {
+            "group": "Components",
+            "pages": ["components/overview", "components/discord-status", "components/inline-quote", "components/avatar"]
+          }
+        ]
+      },
+      {
+        "tab": "Development",
+        "groups": [
+          {
+            "group": "Contributing",
+            "pages": ["development/contributing", "development/code-of-conduct", "development/changelog"]
+          },
+          {
+            "group": "Configuration",
+            "pages": ["development/environment-variables", "development/analytics"]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Personal portfolio showcasing projects and work experience",
+    "Blog with MDX-based articles",
+    "Real-time Discord presence status via lantern.rest API",
+    "Live Spotify track display when listening",
+    "Dark/light mode with warm color palette",
+    "View transitions for smooth page navigation",
+    "Rybbit analytics integration",
+    "Zod-based environment variable validation"
+  ],
+  "publicApiSurface": [
+    "GET https://lantern.rest/api/v1/users/:userId — Discord presence status",
+    "generateMetadata(options) — Next.js metadata generation utility",
+    "cn(...classes) — Tailwind class merging utility",
+    "getRelativeTime(timestamp) — Human-readable relative time formatter",
+    "validateEnvironmentVariables() — Zod environment variable validator"
+  ]
+}
