@@ -1,0 +1,105 @@
+---
+title: 'Changelog'
+description: 'Full version history of skyhan.cloud.'
+---
+
+This page summarizes the key changes in each release. For the complete commit-level history, see the [full CHANGELOG.md on GitHub](https://github.com/skyhancloud/skyhan.cloud/blob/main/CHANGELOG.md).
+
+The current version is **2.8.1**.
+
+<AccordionGroup>
+  <Accordion title="v2.8.x" defaultOpen>
+    ### 2.8.1 — 2025-12-12
+
+    **Bug fixes**
+    - Updated the `next` dependency from version 15.0.5 to 15.0.7.
+
+    ### 2.8.0 — 2025-12-02
+
+    **Features**
+    - Added `generateStaticParams` to retrieve blog directories for static export.
+    - Added Rybbit analytics script to the root layout.
+    - Added a selfie image to the header.
+    - Added SubWatch to the projects list.
+    - Added custom analytics events (`project_link_click`, `work_link_click`, `discord_status_click`).
+    - Added a `hide` prop to the Discord status component and integrated it into the blog layout.
+    - Implemented environment variable validation using Zod.
+    - Removed the Spotify integration and related components.
+    - Replaced the Bricolage Grotesque font with Faustina and added an Avatar component.
+    - Updated the profile image and resume PDF.
+
+    **Bug fixes**
+    - Added `'use client'` directive to the `Projects` and `Works` components.
+    - Fixed the last-seen timestamp conversion in the Discord status component (milliseconds).
+    - Moved the development analytics stub to a separate `Script` component.
+    - Updated job titles in the `Page` and `Works` components.
+    - Improved link and icon colors for better visibility.
+  </Accordion>
+
+  <Accordion title="v2.7.0 — 2025-02-12">
+    **Features**
+    - Added a new blog post: "Unlocking the Potential of iOS Notifications with Bark.js".
+    - Added `imgur.com` to the Next.js remote image patterns.
+    - Enhanced the Discord status component to show last-seen time and updated related types.
+    - Added Bark.js to the works list.
+    - Improved the build and deploy workflow with SSH setup and notifications.
+
+    **Bug fixes**
+    - Initialized blog title state as an empty string.
+    - Updated a code block in the blog to use TypeScript instead of JavaScript.
+    - Fixed the SSH deployment script to use the correct project directory.
+
+    **Reverts**
+    - Reverted the Discord bot integration (was added and reverted in the same release).
+  </Accordion>
+
+  <Accordion title="v2.6.0 — 2024-12-01">
+    **Features**
+    - Added the `next-view-transitions` package.
+    - Wrapped `RootLayout` in `ViewTransitions` to enable smooth page transitions.
+
+    **Bug fixes**
+    - Refactored the Discord status component's link structure.
+  </Accordion>
+
+  <Accordion title="v2.5.0 — 2024-12-01">
+    **Features**
+    - Enhanced the Discord status component to display Spotify listening information.
+  </Accordion>
+
+  <Accordion title="v2.4.0 — 2024-11-30">
+    **Features**
+    - Added a new blog post: "Using Lantern REST to Display Your Discord Presence".
+    - Added the Discord status component to show online/offline status.
+    - Added date support to the generated metadata utility.
+
+    **Bug fixes**
+    - Updated the `key` prop in the songs list to include `played_at` for unique identification.
+    - Added `pointer-events-none` to tooltip content when `disableHoverableContent` is set.
+  </Accordion>
+
+  <Accordion title="Earlier versions (v2.0.0 – v2.3.0)">
+    ### 2.3.0 — 2024-11-11
+    - Updated `InlineQuote` options to accept `href` and `text` parameters.
+
+    ### 2.2.2 — 2024-11-08
+    - Removed the Unsplash image hostname from Next.js remote patterns.
+
+    ### 2.2.1 — 2024-11-06
+    - Moved ISR revalidation in the songs route from `fetch` to an export.
+
+    ### 2.2.0 — 2024-11-06
+    - Integrated the Spotify API to display recently played tracks.
+
+    ### 2.1.0 — 2024-11-06
+    - Implemented the `generateMetadata` utility for dynamic metadata generation.
+    - Fixed the maximum width of tooltip content to 320px.
+
+    ### 2.0.1 — 2024-11-05
+    - Fixed the project link for `barisyasaman.com` in the works list.
+
+    ### 2.0.0 — 2024-11-05 _(breaking)_
+    - **Full website redesign** — rebuilt from scratch.
+    - Added `resume.pdf`.
+  </Accordion>
+</AccordionGroup>

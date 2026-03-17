@@ -1,0 +1,61 @@
+---
+title: 'Configuration'
+description: 'Environment variables and Next.js configuration for skyhan.cloud.'
+---
+
+## Environment variables
+
+Copy `.env.example` to `.env` and set the values below. All environment variables are validated at startup using [Zod](https://zod.dev), so the app will throw an error and refuse to start if any value fails validation.
+
+<ParamField path="RYBBIT_ANALYTICS_SITE_ID" type="string">
+  The site ID from your [Rybbit](https://www.rybbit.io) dashboard. Used to identify your site when sending analytics events.
+</ParamField>
+
+<ParamField path="RYBBIT_ANALYTICS_URL" type="string">
+  The base URL of your Rybbit analytics instance (must be a valid URL, e.g. `https://analytics.example.com`). The app appends `/script.js` to this value when loading the tracking script.
+</ParamField>
+
+<Note>
+  Both `RYBBIT_ANALYTICS_SITE_ID` and `RYBBIT_ANALYTICS_URL` are optional. If either value is missing or empty, the analytics script is not injected and the site works normally without any tracking.
+</Note>
+
+## Zod validation
+
+The app calls `validateEnvironmentVariables()` on startup (`utils/validateEnvironmentVariables.ts`). It uses a Zod schema to parse `process.env` and throws an error with a detailed message if any variable fails its constraint. This means misconfigured deployments fail fast rather than silently.
+
+The full schema is:
+
+```typescript
+const envVariables = z.object({
+  NODE_ENV: z.enum(['development', 'production']),
+  SPOTIFY_CLIENT_ID: z.string().optional(),
+  SPOTIFY_CLIENT_SECRET: z.string().optional(),
+  SPOTIFY_REDIRECT_URL: z.string().url().optional(),
+  SPOTIFY_REFRESH_TOKEN: z.string().optional(),
+  RYBBIT_ANALYTICS_SITE_ID: z.string().optional(),
+  RYBBIT_ANALYTICS_URL: z.string().url().optional()
+});
+```
+
+<Warning>
+  `RYBBIT_ANALYTICS_URL` must be a valid URL string. Providing a malformed value (e.g. a plain hostname without a protocol) will cause the app to fail validation and refuse to start.
+</Warning>
+
+## next.config.ts
+
+The Next.js configuration lives in `next.config.ts` at the project root.
+
+**MDX support** — The config wraps the base config with `createMDX()` from `@next/mdx`, enabling `.mdx` files to be used as pages alongside `.tsx`, `.ts`, and `.js` files:
+
+```typescript
+const withMDX = createMDX();
+export default withMDX(nextConfig);
+```
+
+**Remote image patterns** — The following remote hostnames are whitelisted for use with `next/image`:
+
+| Hostname | Usage |
+| --- | --- |
+| `i.scdn.co` | Spotify album/artist artwork |
+| `i.imgur.com` | Imgur-hosted images |
+| `cdn.discordapp.com` | Discord avatar (scoped to a specific user path) |

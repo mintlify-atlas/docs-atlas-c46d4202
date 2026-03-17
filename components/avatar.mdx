@@ -1,0 +1,64 @@
+---
+title: "Avatar component"
+description: "Profile picture component that displays Gökhan's Discord avatar sourced from the lantern.rest Zustand store."
+---
+
+`Avatar` displays Gökhan's profile picture as a circular 48×48 px image. Rather than hardcoding an image URL, it reads the `display_avatar_url` field from the global Zustand store that `DiscordStatus` populates after fetching the lantern.rest API.
+
+## Props
+
+This component accepts no props. It is a self-contained presentational component that reads shared state.
+
+## Behavior
+
+### Loading state
+
+While `data` in `useDiscordUserStore` is `null` (before `DiscordStatus` has finished its fetch), `Avatar` renders an animated skeleton:
+
+```tsx
+<div className='size-12 animate-pulse rounded-full border-2 border-primary bg-secondary' />
+```
+
+This is a gray pulsing circle that matches the avatar's dimensions, preventing layout shift.
+
+### Loaded state
+
+Once `data` is available, the component renders a Next.js `<Image>` sourced from `data.metadata.display_avatar_url`:
+
+```tsx
+<Image
+  src={data.metadata.display_avatar_url}
+  alt=''
+  width={100}
+  height={100}
+  className='size-12 rounded-full border-2 border-primary object-cover'
+/>
+```
+
+The image is rendered at 48×48 px (`size-12`) with a 2 px `border-primary` ring and `object-cover` to handle non-square source images. The `alt` attribute is intentionally empty because the avatar is decorative — the user's name is displayed in an adjacent heading.
+
+## Usage
+
+`Avatar` is used once in `app/page.tsx` in the site header alongside the user's name and `DiscordStatus`:
+
+```tsx
+import Avatar from '@/components/avatar';
+import DiscordStatus from '@/components/discord-status';
+
+<div className='flex w-full items-center gap-x-4'>
+  <Avatar />
+
+  <div className='flex flex-col'>
+    <h1 className='font-faustina font-bold'>Gökhan Bulut</h1>
+    <span className='text-sm text-secondary'>Developer</span>
+  </div>
+
+  <div className='grow' />
+
+  <DiscordStatus userId='957840712404193290' />
+</div>
+```
+
+<Note>
+  `Avatar` depends on `DiscordStatus` having been mounted in the same React tree. `DiscordStatus` is the component that triggers the lantern.rest fetch and writes data into the shared store. If `Avatar` is rendered without `DiscordStatus`, it will display the loading skeleton indefinitely.
+</Note>

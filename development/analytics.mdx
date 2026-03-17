@@ -1,0 +1,122 @@
+---
+title: 'Analytics'
+description: 'How skyhan.cloud integrates Rybbit for privacy-friendly, optional analytics.'
+---
+
+skyhan.cloud uses [Rybbit](https://www.rybbit.io) for analytics. The integration is entirely optional — if you don't configure it, no tracking scripts are loaded at all.
+
+## How it works
+
+The analytics behavior depends on the environment and whether the required environment variables are set:
+
+| Environment | Variables set | Behavior |
+|-------------|---------------|----------|
+| Production | Both set | Loads `{RYBBIT_ANALYTICS_URL}/script.js` with your site ID |
+| Production | Missing | No analytics script is loaded |
+| Development | Any | A stub `window.rybbit` object is injected — no real tracking |
+
+The production script is added to the `<html>` element in `app/layout.tsx` using Next.js's `<Script>` component with `strategy="afterInteractive"`. The development stub provides the same `window.rybbit` API shape so that custom event calls don't throw errors during local development.
+
+```typescript
+// Production: loads the real script
+{process.env.NODE_ENV === 'production' &&
+  process.env.RYBBIT_ANALYTICS_SITE_ID &&
+  process.env.RYBBIT_ANALYTICS_URL && (
+  <Script
+    src={`${process.env.RYBBIT_ANALYTICS_URL}/script.js`}
+    site-id={process.env.RYBBIT_ANALYTICS_SITE_ID}
+    strategy="afterInteractive"
+  />
+)}
+
+// Development: injects a no-op stub
+{process.env.NODE_ENV === 'development' && (
+  <Script
+    strategy="afterInteractive"
+    dangerouslySetInnerHTML={{
+      __html: `
+        window.rybbit = {
+          pageview: () => {},
+          event: () => {}
+        };
+      `
+    }}
+  />
+)}
+```
+
+## Custom events
+
+The app fires custom events using `window.rybbit.event()`. All event calls are guarded with `'rybbit' in window` to safely handle cases where the script has not yet loaded.
+
+### `project_link_click`
+
+Fired in `components/projects.tsx` when a user clicks on a project link.
+
+```typescript
+window.rybbit.event('project_link_click', {
+  project_name: item.name,  // e.g. "SubWatch"
+  project_link: item.link   // e.g. "https://subwatch.net"
+});
+```
+
+### `work_link_click`
+
+Fired in `components/works.tsx` when a user clicks on a work/employment link.
+
+```typescript
+window.rybbit.event('work_link_click', {
+  work_name: item.name,  // e.g. "Frontend Developer at ..."
+  work_link: item.link   // e.g. "https://kisilerarasiiliskilerterapisi.com/"
+});
+```
+
+### `discord_status_click`
+
+Fired in `components/discord-status.tsx` when a user clicks the Discord status indicator. No additional properties are sent.
+
+```typescript
+window.rybbit.event('discord_status_click');
+```
+
+## Setting up Rybbit
+
+<Steps>
+  <Step title="Create a Rybbit account">
+    Go to [rybbit.io](https://www.rybbit.io) and sign up for an account.
+  </Step>
+
+  <Step title="Add your site">
+    In the Rybbit dashboard, add your site to receive a **Site ID**.
+  </Step>
+
+  <Step title="Configure your environment">
+    Add the Site ID and your Rybbit instance URL to your `.env` file:
+
+    ```env
+    RYBBIT_ANALYTICS_SITE_ID=your-site-id
+    RYBBIT_ANALYTICS_URL=https://app.rybbit.io
+    ```
+
+    If you are self-hosting Rybbit, replace `https://app.rybbit.io` with your own instance URL.
+  </Step>
+
+  <Step title="Deploy">
+    Redeploy the app. Analytics will activate automatically in production once both variables are present.
+  </Step>
+</Steps>
+
+<Tip>
+  You can verify the analytics script is loading correctly by inspecting the page source in production and confirming the `<script>` tag with your site ID is present in the `<html>` element.
+</Tip>
+
+## The `window.rybbit` API
+
+Rybbit exposes a global `window.rybbit` object with two methods:
+
+```typescript
+window.rybbit.pageview();             // Manually trigger a pageview
+window.rybbit.event(name, props?);    // Fire a named custom event
+```
+
+In development, both methods are replaced with no-ops so your console stays clean and no test data is sent to your analytics dashboard.

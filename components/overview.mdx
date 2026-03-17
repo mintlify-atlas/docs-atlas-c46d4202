@@ -1,0 +1,49 @@
+---
+title: 'Components overview'
+description: 'The focused React components that compose the skyhan.cloud portfolio site.'
+---
+
+The skyhan.cloud site is built from a small set of focused React components. Each component has a single responsibility, keeping the codebase easy to follow and extend.
+
+<Columns cols={2}>
+  <Card title="DiscordStatus" icon="circle-dot" href="/components/discord-status">
+    Real-time Discord presence indicator powered by lantern.rest.
+  </Card>
+  <Card title="InlineQuote" icon="underline" href="/components/inline-quote">
+    Inline tooltip/link hybrid for highlighted text with dotted underlines.
+  </Card>
+  <Card title="Avatar" icon="circle-user" href="/components/avatar">
+    Profile picture sourced live from Discord, with a skeleton loading state.
+  </Card>
+  <Card title="Projects" icon="folder-open" href="/features/portfolio">
+    Client component that renders Gökhan's portfolio project list with hover effects.
+  </Card>
+  <Card title="Works" icon="briefcase" href="/features/portfolio">
+    Client component that renders professional work history entries as clickable links.
+  </Card>
+  <Card title="Tooltip" icon="message-circle" href="/components/inline-quote">
+    Radix UI tooltip wrapper with mobile tap support and dark mode styles.
+  </Card>
+</Columns>
+
+## Shared utilities
+
+### `cn` utility
+
+All components that conditionally apply Tailwind classes use the `cn` utility from `utils/cn.ts`. It combines [`clsx`](https://github.com/lukeed/clsx) for conditional class logic with [`tailwind-merge`](https://github.com/dcastil/tailwind-merge) to resolve conflicting Tailwind utilities.
+
+```typescript
+import cn from '@/utils/cn';
+
+// Merges classes safely, resolving Tailwind conflicts
+cn('px-2 py-1', isActive && 'bg-green-500', 'px-4');
+// => 'py-1 px-4' (px-2 is overridden by px-4)
+```
+
+### `next-view-transitions` `<Link>`
+
+Every component that renders a navigation link imports `Link` from [`next-view-transitions`](https://github.com/shuding/next-view-transitions) rather than `next/link` directly. This enables the View Transitions API for smooth page animations across the site.
+
+```typescript
+import { Link } from 'next-view-transitions';
+```

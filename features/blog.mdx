@@ -1,0 +1,130 @@
+---
+title: "Blog"
+description: "Blog posts are MDX files stored alongside the app router. Each post gets its own route, metadata, and full MDX component support."
+---
+
+The blog is built directly into the Next.js App Router. Each post lives in its own folder under `app/blogs/`, and the MDX file at `page.mdx` inside that folder becomes the page.
+
+## How routing works
+
+```
+app/
+└── blogs/
+    ├── layout.tsx                                        # shared blog layout
+    ├── unlocking-the-potential-of-ios-notifications-with-bark-js/
+    │   └── page.mdx
+    └── using-lantern-rest-to-display-your-discord-presence/
+        └── page.mdx
+```
+
+Each directory name under `app/blogs/` becomes the URL slug. A post at `app/blogs/my-post/page.mdx` is accessible at `/blogs/my-post`.
+
+## Metadata
+
+Every post exports metadata using the `generateMetadata` utility from `utils/generateMetadata.ts`. This function accepts a title, description, keywords, and date, then returns a fully-formed Next.js `Metadata` object with Open Graph fields pre-populated.
+
+```typescript
+import generateMetadata from '@/utils/generateMetadata';
+
+export const metadata = generateMetadata({
+  title: 'Your Post Title',
+  description: 'A short description of what the post covers.',
+  date: '2025-06-01'
+});
+```
+
+The generated title is formatted as `"<title> - skyhan.cloud"`. If you omit the description, the default site description is used.
+
+## Blog layout
+
+All posts share the layout defined in `app/blogs/layout.tsx`. It renders:
+
+- A header linking back to the homepage with the avatar and Discord status
+- The post body wrapped in Tailwind `prose` classes for typography
+- Clickable headings that update the URL hash and scroll smoothly into view
+
+## MDX components
+
+Two custom components are available inside any blog post.
+
+### `Image`
+
+Import from `@/components/blogs/image`. Use it instead of a plain Markdown image when you need consistent styling.
+
+```mdx
+import Image from '@/components/blogs/image';
+
+<Image
+  src='https://i.imgur.com/xcs8YFq.png'
+  alt='Bark iOS App Logo'
+/>
+```
+
+### `CodeBlock`
+
+Import from `@/components/blogs/code-block`. Renders a styled code block with an optional file name, icon, and syntax highlighting.
+
+```mdx
+import CodeBlock from '@/components/blogs/code-block';
+import { LuTerminal } from 'react-icons/lu';
+
+<CodeBlock
+  id='install-bark-js'
+  icon={<LuTerminal />}
+  fileName="terminal"
+  language="bash"
+>
+{`npm install @thiskyhan/bark.js`}
+</CodeBlock>
+```
+
+## Current posts
+
+| Title | Date |
+|---|---|
+| Unlocking the Potential of iOS Notifications with Bark.js | 2025-01-29 |
+| Using lantern.rest to Display Your Discord Presence | 2024-12-01 |
+
+## Adding a new post
+
+<Steps>
+  <Step title="Create the post directory">
+    Create a new folder under `app/blogs/` using a URL-friendly slug.
+
+    ```bash
+    mkdir app/blogs/your-post-slug
+    ```
+  </Step>
+
+  <Step title="Create page.mdx">
+    Create `page.mdx` inside the new directory.
+
+    ```bash
+    touch app/blogs/your-post-slug/page.mdx
+    ```
+  </Step>
+
+  <Step title="Add metadata and imports">
+    At the top of `page.mdx`, import `generateMetadata` and export your post's metadata.
+
+    ```mdx
+    import generateMetadata from '@/utils/generateMetadata';
+    import Image from '@/components/blogs/image';
+    import CodeBlock from '@/components/blogs/code-block';
+
+    export const metadata = generateMetadata({
+      title: 'Your Post Title',
+      description: 'A short description of what the post covers.',
+      date: '2025-06-01'
+    });
+    ```
+  </Step>
+
+  <Step title="Write your content">
+    Write the post body in MDX below the metadata export. Use standard Markdown headings, lists, and links, and import `Image` or `CodeBlock` wherever needed.
+  </Step>
+</Steps>
+
+<Tip>
+  The `date` field in `generateMetadata` is stored on the Next.js `Metadata` object via a module augmentation in `types/index.d.ts`. It does not affect routing or rendering — it is metadata only.
+</Tip>

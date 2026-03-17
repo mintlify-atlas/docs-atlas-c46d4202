@@ -1,0 +1,115 @@
+---
+title: 'Contributing'
+description: 'Learn how to contribute to skyhan.cloud — bug fixes, features, and documentation are all welcome.'
+---
+
+Contributions to skyhan.cloud are welcome. Whether you're fixing a bug, adding a feature, or improving the docs, this guide walks you through the process.
+
+## Getting started
+
+<Steps>
+  <Step title="Fork the repository">
+    Go to [github.com/skyhancloud/skyhan.cloud](https://github.com/skyhancloud/skyhan.cloud) and click **Fork** to create your own copy.
+  </Step>
+
+  <Step title="Clone your fork">
+    Clone your fork to your local machine:
+
+    ```bash
+    git clone https://github.com/your-username/skyhan.cloud.git
+    cd skyhan.cloud
+    ```
+  </Step>
+
+  <Step title="Install dependencies">
+    Install the required packages using pnpm:
+
+    ```bash
+    pnpm install
+    ```
+  </Step>
+
+  <Step title="Create a branch">
+    Create a new branch for your change. Use the appropriate prefix based on the type of change:
+
+    ```bash
+    git checkout -b feat/your-feature
+    ```
+  </Step>
+
+  <Step title="Make your changes">
+    Write your code, following the style and conventions used throughout the project. Update documentation if your change affects behavior visible to users.
+  </Step>
+
+  <Step title="Commit your changes">
+    Commit using the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) format. This project enforces conventional commits via `commitlint`.
+
+    ```bash
+    git commit -m "feat: add analytics event for project clicks"
+    ```
+
+    See the [commit message format](#commit-message-format) section below for details.
+  </Step>
+
+  <Step title="Push and open a pull request">
+    Push your branch to your fork and open a pull request against the `main` branch:
+
+    ```bash
+    git push origin feat/your-feature
+    ```
+
+    Provide a clear description of what the PR changes and why. The project team will review it and provide feedback or merge it.
+  </Step>
+</Steps>
+
+## Commit message format
+
+This project uses [`@commitlint/config-conventional`](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-conventional), which enforces the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification.
+
+Every commit message must follow this structure:
+
+```
+<type>(<optional scope>): <description>
+```
+
+### Common types
+
+| Type | When to use |
+|------|-------------|
+| `feat` | A new feature |
+| `fix` | A bug fix |
+| `chore` | Maintenance tasks, dependency updates |
+| `docs` | Documentation changes only |
+| `style` | Formatting, whitespace — no logic changes |
+| `refactor` | Code restructuring without behavior change |
+| `test` | Adding or updating tests |
+| `ci` | CI/CD pipeline changes |
+| `revert` | Reverts a previous commit |
+
+### Examples
+
+```bash
+# New feature with an optional scope
+git commit -m "feat(analytics): add custom event for discord status click"
+
+# Bug fix
+git commit -m "fix(discord-status): correct last seen timestamp conversion"
+
+# Dependency update
+git commit -m "chore: update next from 15.0.5 to 15.0.7"
+
+# Documentation
+git commit -m "docs: add environment variables reference"
+```
+
+<Note>
+  Commits that do not match the conventional format will be rejected by the pre-commit hook.
+</Note>
+
+## Reporting issues
+
+If you encounter a bug or have a feature request, [open an issue](https://github.com/skyhancloud/skyhan.cloud/issues) on GitHub with a clear description and any relevant details.
+
+## Code of conduct
+
+All contributors are expected to follow the project's [Code of Conduct](/development/code-of-conduct). Please review it before participating.

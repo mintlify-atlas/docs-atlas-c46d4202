@@ -1,0 +1,71 @@
+---
+title: 'Deployment'
+description: 'Build and run skyhan.cloud in production.'
+---
+
+## Production build
+
+<Steps>
+  <Step title="Clone the repository and install dependencies">
+    Follow the steps on the [Prerequisites](/self-hosting/prerequisites) page to install Node.js, pnpm, and Git, then run:
+
+    ```bash
+    git clone https://github.com/skyhancloud/skyhan.cloud.git
+    cd skyhan.cloud
+    pnpm install
+    ```
+  </Step>
+
+  <Step title="Configure environment variables">
+    Copy the example file and fill in your values:
+
+    ```bash
+    cp .env.example .env
+    ```
+
+    See the [Configuration](/self-hosting/configuration) page for a full description of each variable.
+  </Step>
+
+  <Step title="Build the application">
+    Compile and optimize the app for production:
+
+    ```bash
+    pnpm build
+    ```
+
+    Next.js will output the build artifacts to the `.next` directory.
+  </Step>
+
+  <Step title="Start the production server">
+    ```bash
+    pnpm start
+    ```
+
+    The server starts on port 3000 by default. You can access it at `http://localhost:3000`.
+  </Step>
+</Steps>
+
+## Deploying to Vercel
+
+<Tip>
+  [Vercel](https://vercel.com) is the recommended platform for deploying Next.js applications — Next.js is built and maintained by Vercel. Deploying to Vercel gives you zero-config builds, automatic HTTPS, and global edge caching with no extra setup.
+</Tip>
+
+To deploy on Vercel:
+
+1. Push your fork to GitHub.
+2. Import the repository in the [Vercel dashboard](https://vercel.com/new).
+3. Add your environment variables in the **Environment Variables** section of the project settings.
+4. Vercel will build and deploy the app automatically on every push to `main`.
+
+## Custom server port
+
+By default, `pnpm start` listens on port 3000. To use a different port, pass the `-p` flag:
+
+```bash
+pnpm start -- -p 8080
+```
+
+<Note>
+  The Rybbit analytics script is only injected when `NODE_ENV` is set to `production` and both `RYBBIT_ANALYTICS_SITE_ID` and `RYBBIT_ANALYTICS_URL` are provided. Analytics are automatically disabled in development.
+</Note>

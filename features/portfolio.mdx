@@ -1,0 +1,61 @@
+---
+title: "Portfolio"
+description: "The homepage showcases Gökhan's personal projects and professional work history, giving visitors a quick overview of what he has built and who he has worked with."
+---
+
+The homepage at `app/page.tsx` is divided into two sections that make up the portfolio: **Projects** and **Works**. Both sections are rendered as standalone React components.
+
+## Projects
+
+The `Projects` component (`components/projects.tsx`) lists personal and open-source projects. Each entry shows the project name, a short description, and links out to the live site or repository.
+
+<CardGroup cols={2}>
+  <Card title="SubWatch" href="https://subwatch.net">
+    Track your subscriptions and manage your expenses. A personal project to help stay on top of recurring costs.
+  </Card>
+  <Card title="discord.place" href="https://discord.place">
+    A hub for everything Discord — bots, profiles, sounds, and more. A project actively developed and maintained.
+  </Card>
+  <Card title="lantern.rest" href="https://github.com/discordplace/lantern">
+    Broadcast your active Discord status to an API endpoint and WebSocket connection. Ready to use or self-host.
+  </Card>
+  <Card title="discordsfx.com" href="https://discord.place/sounds">
+    Find short MP3 files for Discord Soundboard. The first Next.js project, now part of discord.place.
+  </Card>
+  <Card title="Distalk Bot" href="https://discord.com/oauth2/authorize?client_id=1243615735272570912">
+    A Discord bot for anonymous conversations. Ensures privacy and secure interactions. Built with TypeScript and MongoDB.
+  </Card>
+</CardGroup>
+
+## Works
+
+The `Works` component (`components/works.tsx`) lists professional engagements and notable side work. Entries without a URL still appear in the list but are not linked.
+
+| Name | Description |
+|---|---|
+| Frontend Developer at Kişilerarası İlişkiler Psikoterapisi Derneği | Modernised the website by preserving existing content; redesigned from scratch using React and Tailwind CSS. |
+| Frontend and Backend Developer at barisyasaman.com | A Turkish election simulation site with live results on a map, connected to a Discord bot. Built with React, SQLite, Tailwind CSS, and Express. |
+| Discord Bots | Multiple Discord bots for various servers, used by thousands of users. Built with Discord.js and MongoDB. |
+| Bark.js | A lightweight JavaScript library for sending custom push notifications to an iPhone via the Bark iOS app. |
+
+## Analytics events
+
+Both components fire [Rybbit](https://rybbit.io) custom events when a visitor clicks a link.
+
+```typescript
+// Fired when a project link is clicked (components/projects.tsx)
+window.rybbit.event('project_link_click', {
+  project_name: item.name,
+  project_link: item.link
+});
+
+// Fired when a work link is clicked (components/works.tsx)
+window.rybbit.event('work_link_click', {
+  work_name: item.name,
+  work_link: item.link
+});
+```
+
+<Note>
+  Events are only fired if the `rybbit` object is present on `window`. When analytics are disabled or blocked, clicks still navigate normally.
+</Note>

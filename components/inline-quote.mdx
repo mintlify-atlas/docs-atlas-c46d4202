@@ -1,0 +1,66 @@
+---
+title: 'InlineQuote component'
+description: 'Inline highlighted text that shows a tooltip on hover or navigates to a URL on click.'
+---
+
+`InlineQuote` renders its children with a dotted underline decoration. Depending on which prop you pass, it behaves in one of two ways:
+
+- **Tooltip mode** — pass `text` to show a tooltip above the text on hover.
+- **Link mode** — pass `href` to wrap the text in an external link.
+
+If neither prop is provided, the component renders its `children` unwrapped with no styling applied.
+
+## Props
+
+<ParamField path="children" type="React.ReactNode" required>
+  The inline content to highlight. Typically a word or short phrase within a sentence.
+</ParamField>
+
+<ParamField path="text" type="string">
+  Tooltip content displayed on hover. When provided (and `href` is absent), the component enters tooltip mode. The tooltip appears above the text with a 200 ms open delay and can hold up to 500 px of content on larger screens.
+</ParamField>
+
+<ParamField path="href" type="string">
+  URL to navigate to on click. When provided, the component renders as an external link (opens in a new tab) instead of a tooltip. Takes precedence over `text` if both are supplied.
+</ParamField>
+
+## Usage examples
+
+### Tooltip mode
+
+Use `text` to attach a hover explanation to an inline term, as seen in the "Who am I?" section of the homepage:
+
+```tsx
+<InlineQuote text='TypeScript is a superset of JavaScript that adds static typing to the language. It\'s a powerful tool that helps you catch bugs and improve code quality.'>
+  TypeScript
+</InlineQuote>
+```
+
+Hovering over "TypeScript" opens a Radix UI tooltip with the full explanation. On mobile, tapping the text toggles the tooltip open and closed.
+
+### Link mode
+
+Use `href` to turn highlighted text into an external link, as used in the "More" section of the homepage:
+
+```tsx
+<InlineQuote href='https://github.com/skyhancloud'>GitHub</InlineQuote>
+<InlineQuote href='mailto:root@skyhan.cloud'>email</InlineQuote>
+<InlineQuote href='https://instagram.com/skyhancloud'>Instagram</InlineQuote>
+<InlineQuote href='/resume.pdf'>resume</InlineQuote>
+```
+
+Each of these renders with `target='_blank'` using the `next-view-transitions` `<Link>` component.
+
+## Styling
+
+Both modes share the same base underline style:
+
+- `decoration-dotted` with `decoration-tertiary` at rest
+- Transitions to `decoration-primary` on hover
+- `underline-offset-4` for comfortable spacing
+
+In tooltip mode the wrapper is a `<div>` with `cursor-help`. In link mode it is a `<Link>` with the standard cursor.
+
+## Accessibility
+
+Tooltip mode uses the Radix UI `Tooltip` component internally, which follows the [WAI-ARIA tooltip pattern](https://www.w3.org/WAI/ARIA/apg/patterns/tooltip/). The tooltip content is properly associated with its trigger, and the `disableHoverableContent={false}` option allows users to move the mouse into the tooltip without it closing.

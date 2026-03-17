@@ -1,0 +1,85 @@
+---
+title: 'DiscordStatus component'
+description: 'Real-time Discord presence indicator that fetches live status from the lantern.rest API.'
+---
+
+`DiscordStatus` is a client component that fetches a Discord user's live presence from the [lantern.rest](https://lantern.rest) API and displays their current online/offline state. When the user is actively listening to Spotify, it also shows the spinning album art and track information.
+
+The entire component is wrapped in a `Tooltip` that reads "Discord status powered by lantern.rest" and links to `https://lantern.rest` on click.
+
+## Props
+
+<ParamField path="userId" type="string" required>
+  The Discord user ID to fetch status for. Passed directly into the lantern.rest API URL.
+</ParamField>
+
+<ParamField path="hide" type="boolean" default="false">
+  When `true`, the component renders with `display: none` via the `hidden` CSS class. Useful for hiding the indicator without unmounting it.
+</ParamField>
+
+## Usage
+
+```tsx
+import DiscordStatus from '@/components/discord-status';
+
+<DiscordStatus userId='957840712404193290' />
+```
+
+This is the exact usage in `app/page.tsx`, placed in the header row alongside the `Avatar` and name.
+
+## Behavior
+
+The component manages three pieces of local state: `status` (`'loading' | 'online' | 'offline' | 'error'`), `spotify` (a `LanternSpotify` object or `null`), and `lastSeenAt` (a Unix timestamp in milliseconds or `null`).
+
+### Loading state
+
+While the fetch is in progress, `status` is `'loading'`. The component renders a gray dot and the text "Offline" — the same visual as the offline state — so there is no layout shift when the real data arrives.
+
+### Online state
+
+When the API returns a non-`'offline'` status, a pulsing green dot (using Tailwind's `animate-ping`) is shown alongside the text "Online".
+
+### Spotify playing
+
+When the user is online **and** `active_platforms.spotify` is non-null, a row above the status dot appears (hidden on screens narrower than `sm`) showing:
+
+- The album cover as a spinning 16×16 px circle (CSS `animate-spin` at 3 s per revolution).
+- "Listening to `<song>` by `<artist>`" in `text-xs`.
+
+Artists can be a `string` or `string[]`; the component joins array values with `', '`.
+
+### Offline state
+
+When the API returns `status: 'offline'`, the dot turns gray and displays "Offline". If `last_seen_at` is present, a "Last seen X ago" line is shown above the dot using the `getRelativeTime` utility.
+
+### Error state
+
+If the fetch fails or returns a non-OK response, `status` is set to `'error'`. Errors are treated visually identically to the offline state (gray dot, no last-seen timestamp).
+
+## Data fetching
+
+On mount, the component fetches:
+
+```
+GET https://lantern.rest/api/v1/users/:userId
+```
+
+The response is typed as `LanternUserResponse` from `types/index.d.ts`.
+
+## State management
+
+After a successful fetch, the raw `LanternUserResponse` is written into the global Zustand store via `useDiscordUserStore`:
+
+```typescript
+// stores/discord-user.ts
+interface DiscordUserStore {
+  data: LanternUserResponse | null;
+  setData: (data: LanternUserResponse) => void;
+}
+```
+
+The `Avatar` component reads from the same store to render Gökhan's Discord avatar without making a second API request.
+
+<Note>
+  The fetch runs once on mount. There is no polling interval, so the status reflects the user's presence at the time the page loaded.
+</Note>

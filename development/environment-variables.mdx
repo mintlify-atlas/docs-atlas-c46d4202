@@ -1,0 +1,76 @@
+---
+title: 'Environment variables'
+description: 'Configure the environment variables required to run skyhan.cloud.'
+---
+
+The app validates all environment variables at startup using [Zod](https://zod.dev). If any variable fails validation, the build throws an error and logs exactly which variable is invalid. This prevents the app from starting with a misconfigured environment.
+
+## Setup
+
+<Steps>
+  <Step title="Copy the example file">
+    Copy `.env.example` to a new file named `.env` in the project root:
+
+    ```bash
+    cp .env.example .env
+    ```
+  </Step>
+
+  <Step title="Fill in the values">
+    Open `.env` and fill in any values you need:
+
+    ```env
+    RYBBIT_ANALYTICS_SITE_ID=
+    RYBBIT_ANALYTICS_URL=
+    ```
+
+    Both variables are optional. If you leave them empty, analytics will not be loaded. See [Analytics](/development/analytics) for details.
+  </Step>
+</Steps>
+
+## Variables
+
+<ParamField path="RYBBIT_ANALYTICS_SITE_ID" type="string">
+  The site ID from your Rybbit analytics dashboard. Found under **Settings → Site ID** after adding your site.
+
+  Optional. If omitted, no analytics scripts are loaded in production.
+</ParamField>
+
+<ParamField path="RYBBIT_ANALYTICS_URL" type="string">
+  The base URL of your Rybbit analytics instance.
+
+  **Example:** `https://app.rybbit.io`
+
+  Must be a valid URL. Optional. If omitted, no analytics scripts are loaded in production.
+</ParamField>
+
+<Note>
+  Both `RYBBIT_ANALYTICS_SITE_ID` and `RYBBIT_ANALYTICS_URL` must be set for analytics to activate. Setting only one of them has no effect.
+</Note>
+
+## Validation schema
+
+The validation logic lives in `utils/validateEnvironmentVariables.ts` and runs at build time. The schema uses `zod.safeParse` so that all invalid variables are reported at once:
+
+```typescript
+import { z } from 'zod';
+
+const envVariables = z.object({
+  NODE_ENV: z.enum(['development', 'production']),
+  RYBBIT_ANALYTICS_SITE_ID: z.string().optional(),
+  RYBBIT_ANALYTICS_URL: z.string().url().optional()
+});
+
+export default function validateEnvironmentVariables() {
+  const parsedEnv = envVariables.safeParse(process.env);
+
+  if (!parsedEnv.success) {
+    console.error('Invalid environment variables:');
+    console.error(parsedEnv.error.format());
+
+    throw new Error('Invalid environment variables');
+  }
+}
+```
+
+The schema also extends `NodeJS.ProcessEnv` so that `process.env` is fully typed throughout the codebase.
